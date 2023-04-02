@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for time_key in time_groups %}
+<h2 class="from_date">{{ time_key }}</h2>
+<table class="pure-table pure-table-horizontal" style="width: 100%;">
+    <tbody>
+        {% for t in time_groups[time_key] %}
+        <tr class="{{ 'secondary' if t.is_checked else '' }}">
+            <td style="width: 60%;">{{ t.description }}</td>
+            <td style="width: 10%; text-align: center;">{{ t.float_time_to_time(t.get_start_time()) }} <br> {{ t.float_time_to_time(t.end_time) }}</td>
+            <td style="width: 10%; text-align: center;">{{ t.float_time_to_time(t.duration) }}</td>
+            <td style="width: 20%; text-align: center; font-size: small;">
+                <a href="{{ url_for('timesheet_app.read_timesheet', time_id=t.id)}}">edit</a>
+                &middot;
+                <a href="{{ url_for('timesheet_app.toggle_checked', time_id=t.id)}}">{{ 'restore' if t.is_checked else 'checked'}}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
+
+{% endblock %}

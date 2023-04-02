@@ -22,7 +22,7 @@ def index():
     except ValueError:
         from_date = today_isoformat
     # get daily lines
-    lines = Timesheet.query.filter_by(day=from_date).order_by(Timesheet.end_time).all()
+    lines = Timesheet.query.filter_by(day=from_date).order_by(Timesheet.end_time, Timesheet.id).all()
     # do the math here
     total_time = sum([t.duration for t in lines])
     total_time = Timesheet.float_time_to_time(total_time)
@@ -68,4 +68,25 @@ def update_timesheet(time_id):
     if form_data.get('duration', False):
         record.duration = Timesheet.time_to_float_time(form_data['duration'])
     db.session.commit()
-    return redirect(url_for('timesheet_app.index'))
+    return redirect(url_for('timesheet_app.report'))
+
+@timesheet_app.get('/toggle/<int:time_id>')
+def toggle_checked(time_id):
+    """Alternates `is_checked` status for selected record."""
+    record = Timesheet.query.get_or_404(time_id)
+    record.is_checked = bool(not record.is_checked)
+    db.session.commit()
+    return redirect(request.referrer)
+
+@timesheet_app.get('/report')
+def report():
+    """Print every timesheet recorded in a single page, grouped by day."""
+    lines = Timesheet.query.order_by(Timesheet.day.desc(), Timesheet.end_time, Timesheet.id).all()
+    time_groups = {}
+    for record in lines:
+        time_key = format_date(record.day, BABEL_DEFAULT_DATE_FORMAT)
+        if time_key not in time_groups:
+            time_groups[time_key] = [record]
+        else:
+            time_groups[time_key].append(record)
+    return render_template('report.html', time_groups=time_groups)

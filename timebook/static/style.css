@@ -47,6 +47,10 @@ body {
     font-size: small;
 }
 
+.pure-table tr.secondary td {
+    color: #cccccc;
+}
+
 .pure-table td a {
     color: darkcyan;
 }
