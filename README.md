@@ -2,6 +2,8 @@
 Simple Flask application for tracking how you spend your time,
 slightly inspired by Traggo - a tag-based time tracking tool.
 
+![](.images/screenshot.png)
+
 
 ## Virtual environment
 
