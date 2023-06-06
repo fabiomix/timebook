@@ -25,7 +25,7 @@ class Timesheet(db.Model):
     def __repr__(self):
         return '<timesheet {}>'.format(self.id)
 
-    def get_start_time(self):
+    def get_start_time(self) -> float:
         """Compute the start time of this timespan."""
         return self.end_time - self.duration
 
@@ -33,17 +33,18 @@ class Timesheet(db.Model):
     # from jinja templates.
 
     @staticmethod
-    def convert_day(value):
+    def convert_day(value: str) -> date:
+        """Shortcut to convert YYYY-MM-DD to date object."""
         day = date.fromisoformat(value)
         return day
 
     @staticmethod
-    def time_to_float_time(value):
+    def time_to_float_time(value: str) -> float:
         """Convert string time (ex. '01:30') into float_time (ex. 1.50)."""
         hour, minute = value.split(':')
         return int(hour) + int(minute)/60.0
 
     @staticmethod
-    def float_time_to_time(value):
+    def float_time_to_time(value: float) -> str:
         """Convert float_time (ex. 2.75) into time string (ex. '02:45')."""
         return '{0:02.0f}:{1:02.0f}'.format(*divmod(float(value) * 60, 60))

@@ -22,7 +22,7 @@
     </fieldset>
 </form>
 
-<h2 class="from_date">{{ from_date }}</h2>
+<h2 class="from_date"><a href="{{ url_for('timesheet_app.index', search_date=search_date)}}">{{ search_date|pretty_date }}</a></h2>
 <table class="pure-table pure-table-horizontal" style="width: 100%;">
     <tbody>
         {% for t in lines %}

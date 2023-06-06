@@ -2,7 +2,7 @@
 
 {% block content %}
 {% for time_key in time_groups %}
-<h2 class="from_date">{{ time_key }}</h2>
+<h2 class="from_date"><a href="{{ url_for('timesheet_app.index', search_date=time_key) }}">{{ time_key|pretty_date }}</a></h2>
 <table class="pure-table pure-table-horizontal" style="width: 100%;">
     <tbody>
         {% for t in time_groups[time_key] %}
