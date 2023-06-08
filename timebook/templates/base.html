@@ -5,25 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Timebook</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='pure-min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='grids-responsive-min.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,700" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/x-icon">
 </head>
 <body>
-    <div class="navbar">
-        <div class="container">
-            <h1><a href="{{ url_for('timesheet_app.index') }}">Timebook</a></h1>
+    <div class="c">
+        <div class="row" id="navbar">
+            <h1 class="text-center"><a href="{{ url_for('timesheet_app.index') }}">Timebook</a></h1>
         </div>
-    </div>
-    <div class="content">
-        <div class="container">
-            {% block content %} {% endblock %}
-        </div>
-    </div>
-    <div class="footer">
-        <div class="container">
-            <p><span>built with &hearts; using Flask</span> &middot; <a href="{{ url_for('timesheet_app.report') }}">show report</a></p>
+        {% block content %} {% endblock %}
+        <hr>
+        <div class="row" id="footer">
+            <p class="text-small">
+                <span>built with &hearts; using Flask</span>
+                &middot;
+                <a href="{{ url_for('timesheet_app.report') }}">show report</a>
+            </p>
         </div>
     </div>
 </body>

@@ -1,70 +1,52 @@
-* {
-    margin: 0;
-    padding: 0;
+/* based on lit - a ridiculously small responsive css framework - https://ajusa.github.io/lit/ */
+*{box-sizing:border-box}
+pre{overflow:auto}
+@media(min-width:35em){
+  .col{display:table-cell}
+  .\31{width:5%}
+  .\33{width:22%}
+  .\34{width:30%}
+  .\35{width:40%}
+  .\32{width:15%}
+  .\36{width:50%}
+  .row{display:table;border-spacing:1em 0}
 }
+.row,.w-100{width:100%}
+.card:focus,hr{outline:0;border:solid #fa0}
+.card,pre{padding:1em;border:solid #eee}
+.btn:hover,a:hover{opacity:.6}
+.c{max-width:60em;padding:1em;margin:auto;font:1em/1.6 nunito}
+h6{font:100 1em nunito}
+h5{font:100 1.2em nunito}
+h4{font:100 1.5em nunito}
+h3{font:100 2em nunito}
+h2{font:100 2.2em nunito}
+h1{font:100 2.5em nunito}
+a{color:#fa0;text-decoration:none}
+.btn.primary{color:#fff;background:#fa0;border:solid #fa0}
+td,th{padding:1em;text-align:left;border-bottom:solid #eee}
+.btn{padding:1em;text-transform:uppercase;background:#fff;border:solid;font:.7em nunito}
 
-body {
-    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
-    font-size: medium;
-}
+/* lit overrides */
+a:hover{text-decoration: underline}
+input{line-height: 20px}
+label{font-size: small}
+td{border-bottom: none; padding: .5em .2em}
+.card,pre{padding: .5em}
 
-.container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
+/* helper classes */
+.block{display: block}
+.hide{display: none}
+.mb5{margin-bottom: .5em}
+.text-center{text-align: center}
+.text-small{font-size: small}
 
-.navbar, .content, .footer {
-    padding: 1em 0;
-}
-
-.navbar {
-    background-color: bisque;
-}
-
-.navbar h1 a {
-    color: black;
-    text-decoration: none;
-}
-
-.navbar h1 a:hover {
-    text-decoration: underline;
-}
-
-.footer {
-    font-size: small;
-}
-
-.pure-form {
-    background-color: #eeeeee;
-    border: solid 1px #cccccc;
-    border-radius: 4px;
-    padding: 1em 1em 0em 1em;
-}
-
-.pure-form label {
-    color: #333333;
-    font-size: small;
-}
-
-.pure-table tr.secondary td {
-    color: #cccccc;
-}
-
-.pure-table td a {
-    color: darkcyan;
-}
-
-.content h2.from_date {
-    padding: 1em 0;
-    text-align: center;
-}
-
-.content h2.from_date a {
-    color: black;
-    text-decoration: none;
-}
-
-.content h2.from_date a:hover {
-    text-decoration: underline;
-}
+/* theme */
+body{background-color: #181818; color: #cccccc;}
+h1, h2, a{color: #ffaa00}
+.card:focus, hr{border-color: #ffaa00}
+form{padding: 1em 0 0 0; background-color: #232323; border: solid 1px #383838; border-radius: 5px}
+form legend{margin: 0 0 5px 0; border-bottom: solid 1px #383838;}
+tr{border: solid 1px #383838; border-width: 1px 2px 1px 2px}
+tr:hover{border-color: #ffaa00}
+tr.checked{color: #383838}

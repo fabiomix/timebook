@@ -1,45 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form class="pure-form pure-form-stacked" method="post">
-    <fieldset>
-        <legend>Add new timesheet</legend>
-        <div class="pure-g">
-            <div class="pure-u-1 pure-u-md-1-2">
-                <label for="description">Description</label>
-                <input class="pure-u-23-24" type="text" name="description" placeholder="sviluppo ticket #012345" value="" required></input>
+<div class="row" id="timeform">
+    <form method="post" action="{{ url_for('timesheet_app.create_timesheet') }}">
+        <div class="row"><legend>Add new timesheet</legend></div>
+        <div class="row">
+            <div class="col 6">
+                <label for="description" class="text-small">Description</label>
+                <input type="text" class="card w-100" name="description" placeholder="lorem ipsum" value="" required/>
             </div>
-            <div class="pure-u-1 pure-u-md-1-4">
-                <label for="end_time">When</label>
-                <input class="pure-u-23-24" type="time" name="end_time" value="" required></input>
+            <div class="col 3">
+                <label for="end_time" class="text-small">End time</label>
+                <input type="time" class="card w-100" name="end_time" value="" required/>
             </div>
-            <div class="pure-u-1 pure-u-md-1-4">
-                <label for="duration">Duration</label>
-                <input class="pure-u-23-24" type="time" name="duration" value="" required></input>
+            <div class="col 3">
+                <label for="duration" class="text-small">Duration</label>
+                <input type="time" class="card w-100" name="duration" value="" required/>
             </div>
         </div>
-        <button type="submit" class="pure-button pure-button-primary" style="visibility: hidden; height: 0;">Submit</button>
-    </fieldset>
-</form>
-
-<h2 class="from_date"><a href="{{ url_for('timesheet_app.index', search_date=search_date)}}">{{ search_date|pretty_date }}</a></h2>
-<table class="pure-table pure-table-horizontal" style="width: 100%;">
-    <tbody>
-        {% for t in lines %}
-        <tr class="{{ 'secondary' if t.is_checked else '' }}">
-            <td style="width: 60%;">{{ t.description }}</td>
-            <td style="width: 10%; text-align: center;">{{ t.float_time_to_time(t.get_start_time()) }} <br> {{ t.float_time_to_time(t.end_time) }}</td>
-            <td style="width: 10%; text-align: center;">{{ t.float_time_to_time(t.duration) }}</td>
-            <td style="width: 20%; text-align: center; font-size: small;">
-                <a href="{{ url_for('timesheet_app.read_timesheet', time_id=t.id)}}">edit</a>
-                &middot;
-                <a href="{{ url_for('timesheet_app.toggle_checked', time_id=t.id)}}">{{ 'restore' if t.is_checked else 'checked'}}</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<h2 class="from_date"> Totale {{ total_time }} ore</h2>
-
+        <!-- https://stackoverflow.com/questions/477691/submitting-a-form-by-pressing-enter-without-a-submit-button -->
+        <button type="submit" style="visibility: hidden; height: 0;">Submit</button>
+        <input type="hidden" name="search_date" value="{{ search_date }}"/>
+    </form>
+</div>
+<div class="row" id="timetable">
+    <h3 class="text-center"><a href="{{ url_for('timesheet_app.index', search_date=search_date)}}">{{ search_date|pretty_date }}</a></h3>
+    <table class="w-100">
+        <tbody>
+            {% for t in lines %}
+            <tr class="row {{ 'checked' if t.is_checked else '' }}">
+                <td class="col">{{ t.description }}</td>
+                <td class="col 2 text-center text-small">
+                    <span class="block">{{ t.float_time_to_time(t.duration) }} from</span>
+                    <span class="block">{{ t.float_time_to_time(t.get_start_time()) }} to {{ t.float_time_to_time(t.end_time) }}</span>
+                </td>
+                <td class="col 2 text-center text-small">
+                    <a class="block" href="{{ url_for('timesheet_app.read_timesheet', time_id=t.id)}}">edit</a>
+                    <a class="block" href="{{ url_for('timesheet_app.toggle_checked', time_id=t.id)}}">{{ 'restore' if t.is_checked else 'archive'}}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h4 class="text-center">Total {{ total_time }}</h4>
+</div>
 {% endblock %}
