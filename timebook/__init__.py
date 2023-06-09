@@ -23,6 +23,8 @@ def create_app():
     # blueprints register
     from timebook.blueprints.timesheet import timesheet_app
     app.register_blueprint(timesheet_app)
+    from timebook.blueprints.cli import cli_app
+    app.register_blueprint(cli_app)
 
     # register the template filter into Jinja
     from timebook.blueprints.timesheet import pretty_date
