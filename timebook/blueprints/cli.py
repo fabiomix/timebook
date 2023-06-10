@@ -20,12 +20,12 @@ def time_delete(time_id: int):
     db.session.commit()
 
 @cli_app.cli.command('time-prune', short_help='Remove all archived timesheet records.')
-@click.option('--dry-run', is_flag=True, show_default=True, default=False, help='We are living in a simulation.')
-def time_prune(dry_run: bool):
+@click.option('-y', '--yes', is_flag=True, default=False, help='Confirm cleanup, default behavior is dry-run mode.')
+def time_prune(yes: bool):
     records = Timesheet.query.filter_by(is_checked=True).order_by(Timesheet.day, Timesheet.end_time, Timesheet.id).all()
     for r in records:
         print_summary(r)
-    if not dry_run:
+    if yes:
         db.session.delete(records)
         db.session.commit()
 
