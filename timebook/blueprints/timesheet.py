@@ -56,12 +56,18 @@ def update_timesheet(time_id):
     db.session.commit()
     return redirect(url_for('timesheet_app.index', search_date=record.day))
 
-@timesheet_app.get('/toggle/<int:time_id>')
+@timesheet_app.post('/toggle/<int:time_id>')
 def toggle_checked(time_id):
     """Alternates `is_checked` status for selected record."""
     record = Timesheet.query.get_or_404(time_id)
     record.is_checked = bool(not record.is_checked)
     db.session.commit()
+    return ('', 204)
+
+@timesheet_app.get('/toggle/<int:time_id>')
+def toggle_checked_nojs(time_id):
+    """Alternates `is_checked` status for selected record. For client without js."""
+    res = toggle_checked(time_id)
     return redirect(request.referrer)
 
 @timesheet_app.get('/report')

@@ -14,7 +14,7 @@
             </td>
             <td class="col 2 text-center text-small">
                 <a class="block" href="{{ url_for('timesheet_app.read_timesheet', time_id=t.id)}}">edit</a>
-                <a class="block" href="{{ url_for('timesheet_app.toggle_checked', time_id=t.id)}}">{{ 'restore' if t.is_checked else 'archive'}}</a>
+                <a class="block toggle-link" href="{{ url_for('timesheet_app.toggle_checked', time_id=t.id)}}">{{ 'restore' if t.is_checked else 'archive'}}</a>
             </td>
         </tr>
         {% endfor %}
