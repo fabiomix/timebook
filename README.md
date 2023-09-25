@@ -1,5 +1,5 @@
 # Timebook
-Simple Flask application for tracking how you spend your time,
+Simple web application for tracking how you spend your time,
 slightly inspired by Traggo - a tag-based time tracking tool.
 
 ![](.images/screenshot.png)
@@ -13,8 +13,8 @@ slightly inspired by Traggo - a tag-based time tracking tool.
 
 ## Virtual environment
 
-    python3 -m venv venv
-    source venv/bin/activate
+    python3 -m venv .venv
+    source .venv/bin/activate
     pip3 install -r requirements.txt
 
 
@@ -31,5 +31,5 @@ slightly inspired by Traggo - a tag-based time tracking tool.
 
 
 ## Credits
-CSS style based on [ajusa/lit](https://github.com/ajusa/lit), a ridiculously
-small responsive css framework.
+CSS style based on [ajusa/lit](https://github.com/ajusa/lit),
+a ridiculously small responsive css framework.

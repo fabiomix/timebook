@@ -6,7 +6,7 @@ from timebook import db
 
 
 class Timesheet(db.Model):
-    __tablename__ = 'timesheet'
+    __tablename__ = "timesheet"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # primary keys are required by SQLAlchemy
     description = db.Column(db.String(1000), nullable=False)
@@ -23,7 +23,7 @@ class Timesheet(db.Model):
         self.is_checked = False
 
     def __repr__(self):
-        return '<timesheet {}>'.format(self.id)
+        return "<timesheet {}>".format(self.id)
 
     def get_start_time(self) -> float:
         """Compute the start time of this timespan."""
@@ -41,10 +41,10 @@ class Timesheet(db.Model):
     @staticmethod
     def time_to_float_time(value: str) -> float:
         """Convert string time (ex. '01:30') into float_time (ex. 1.50)."""
-        hour, minute = value.split(':')
-        return int(hour) + int(minute)/60.0
+        hour, minute = value.split(":")
+        return int(hour) + int(minute) / 60.0
 
     @staticmethod
     def float_time_to_time(value: float) -> str:
         """Convert float_time (ex. 2.75) into time string (ex. '02:45')."""
-        return '{0:02.0f}:{1:02.0f}'.format(*divmod(float(value) * 60, 60))
+        return "{0:02.0f}:{1:02.0f}".format(*divmod(float(value) * 60, 60))

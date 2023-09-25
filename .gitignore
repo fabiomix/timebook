@@ -12,6 +12,7 @@ instance/
 .webassets-cache
 
 # Environments
+.venv/
 venv/
 
 # Visual Studio

@@ -10,9 +10,9 @@ def create_app():
     app = Flask(__name__, instance_relative_config=True)
 
     # app.config.from_pyfile(config_filename)
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///time.db'
-    app.config['BABEL_DEFAULT_LOCALE'] = 'it'
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///time.db"
+    app.config["BABEL_DEFAULT_LOCALE"] = "it"
 
     # Babel init
     babel.init_app(app)
@@ -28,7 +28,7 @@ def create_app():
 
     # register the template filter into Jinja
     from timebook.blueprints.timesheet import pretty_date
-    app.jinja_env.filters['pretty_date'] = pretty_date
+    app.jinja_env.filters["pretty_date"] = pretty_date
 
     # create the table schema in the database
     with app.app_context():
