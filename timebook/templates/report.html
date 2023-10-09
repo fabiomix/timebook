@@ -2,19 +2,19 @@
 
 {% block content %}
 {% for time_key in time_groups %}
-<h3 class="text-center"><a href="{{ url_for('timesheet_app.index', search_date=time_key)}}">{{ time_key|pretty_date }}</a></h3>
+<h3 class="text-center"><a href="{{ url_for('timesheet_app.index', search_date=time_key)}}">{{ time_key|dateformat('full') }}</a></h3>
 <table class="w-100">
     <tbody>
         {% for t in time_groups[time_key] %}
-        <tr class="row {{ 'checked' if t.is_checked else '' }}">
+        <tr class="row {{ 'checked' if t.is_archived else '' }}">
             <td class="col">{{ t.description }}</td>
             <td class="col 2 text-center text-small">
-                <span class="block">{{ t.float_time_to_time(t.duration) }} from</span>
-                <span class="block">{{ t.float_time_to_time(t.get_start_time()) }} to {{ t.float_time_to_time(t.end_time) }}</span>
+                <span class="block">{{ t.duration|format_timedelta() }} from</span>
+                <span class="block">{{ t.start_time|timeformat('short') }} to {{ t.end_time|timeformat('short') }}</span>
             </td>
             <td class="col 2 text-center text-small">
                 <a class="block" href="{{ url_for('timesheet_app.read_timesheet', time_id=t.id)}}">edit</a>
-                <a class="block toggle-link" href="{{ url_for('timesheet_app.toggle_checked', time_id=t.id)}}">{{ 'restore' if t.is_checked else 'archive'}}</a>
+                <a class="block toggle-link" href="{{ url_for('timesheet_app.toggle_checked', time_id=t.id)}}">{{ 'restore' if t.is_archived else 'archive'}}</a>
             </td>
         </tr>
         {% endfor %}

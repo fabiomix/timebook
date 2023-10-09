@@ -21,14 +21,14 @@ def create_app():
     db.init_app(app)
 
     # blueprints register
-    from timebook.blueprints.timesheet import timesheet_app
+    from timebook.blueprints.web import timesheet_app
     app.register_blueprint(timesheet_app)
     from timebook.blueprints.cli import cli_app
     app.register_blueprint(cli_app)
 
     # register the template filter into Jinja
-    from timebook.blueprints.timesheet import pretty_date
-    app.jinja_env.filters["pretty_date"] = pretty_date
+    from timebook.utils import format_timedelta
+    app.jinja_env.filters["format_timedelta"] = format_timedelta
 
     # create the table schema in the database
     with app.app_context():

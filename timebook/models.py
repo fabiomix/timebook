@@ -1,50 +1,44 @@
-from datetime import date, datetime
+from datetime import datetime, time, timedelta
 
-from flask import abort
+from sqlalchemy.ext.hybrid import hybrid_property
 
 from timebook import db
 
 
-class Timesheet(db.Model):
-    __tablename__ = "timesheet"
+class Timespan(db.Model):
+    __tablename__ = "timespan"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # primary keys are required by SQLAlchemy
-    description = db.Column(db.String(1000), nullable=False)
-    day = db.Column(db.Date, nullable=False)
-    end_time = db.Column(db.Numeric(precision=4, scale=2), nullable=False)
-    duration = db.Column(db.Numeric(precision=4, scale=2), nullable=False)
-    is_checked = db.Column(db.Boolean, nullable=False, default=False)
-
-    def __init__(self, description, day, end_time, duration):
-        self.description = description
-        self.day = Timesheet.convert_day(day)
-        self.end_time = Timesheet.time_to_float_time(end_time)
-        self.duration = Timesheet.time_to_float_time(duration)
-        self.is_checked = False
+    id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)  # primary keys are required by SQLAlchemy
+    description: str = db.Column(db.String(500), nullable=False)
+    start_at: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    end_at: datetime = db.Column(db.DateTime, nullable=True)
+    is_archived: bool = db.Column(db.Boolean, nullable=False, default=False)
+    created_at: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    updated_at: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __repr__(self):
-        return "<timesheet {}>".format(self.id)
+        return f"<Timespan id={self.id}>"
 
-    def get_start_time(self) -> float:
-        """Compute the start time of this timespan."""
-        return self.end_time - self.duration
+    def __init__(self, description: str, start_at: datetime, end_at: datetime):
+        self.description = description
+        self.start_at = start_at
+        self.end_at = end_at
+        self.is_archived = False
 
-    # the following methods are staticmethod so they are easily callable
-    # from jinja templates.
+    @hybrid_property
+    def start_time(self) -> time:
+        return self.start_at.time()
 
-    @staticmethod
-    def convert_day(value: str) -> date:
-        """Shortcut to convert YYYY-MM-DD to date object."""
-        day = date.fromisoformat(value)
-        return day
+    @hybrid_property
+    def end_time(self) -> time:
+        return self.end_at.time()
 
-    @staticmethod
-    def time_to_float_time(value: str) -> float:
-        """Convert string time (ex. '01:30') into float_time (ex. 1.50)."""
-        hour, minute = value.split(":")
-        return int(hour) + int(minute) / 60.0
+    @hybrid_property
+    def duration(self) -> timedelta:
+        return self.end_at - self.start_at
 
-    @staticmethod
-    def float_time_to_time(value: float) -> str:
-        """Convert float_time (ex. 2.75) into time string (ex. '02:45')."""
-        return "{0:02.0f}:{1:02.0f}".format(*divmod(float(value) * 60, 60))
+    def to_string(self) -> str:
+        start_date = self.start_at.date().isoformat()
+        start_time = self.start_at.time().isoformat(timespec="minutes")
+        end_time = self.end_at.time().isoformat(timespec="minutes")
+        return f"{start_date} from {start_time} to {end_time} for {self.duration}: {self.description} [id={self.id}]"

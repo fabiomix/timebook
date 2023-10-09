@@ -12,20 +12,20 @@
         </div>
         <div class="row">
             <div class="col 3">
+                <label for="start_time" class="text-small">Start time</label>
+                <input type="time" class="card w-100" name="start_time" value="{{record.start_time.isoformat(timespec='minutes')}}" required/>
+            </div>
+            <div class="col 3">
                 <label for="end_time" class="text-small">End time</label>
-                <input type="time" class="card w-100" name="end_time" value="{{record.float_time_to_time(record.end_time)}}" required/>
+                <input type="time" class="card w-100" name="end_time" value="{{record.end_time.isoformat(timespec='minutes')}}" required/>
             </div>
             <div class="col 3">
-                <label for="duration" class="text-small">Duration</label>
-                <input type="time" class="card w-100" name="duration" value="{{record.float_time_to_time(record.duration)}}" required/>
+                <label for="search_date" class="text-small">Date</label>
+                <input type="date" class="card w-100" name="search_date" value="{{record.start_at.date()}}" required/>
             </div>
             <div class="col 3">
-                <label for="day" class="text-small">Day</label>
-                <input type="date" class="card w-100" name="day" value="{{record.day}}" required/>
-            </div>
-            <div class="col 3">
-                <!-- <label for="is_checked" class="text-small">Archived</label> -->
-                <!-- <input type="checkbox" class="card w-100" name="is_checked" value="" required/> -->
+                <!-- <label for="is_archived" class="text-small">Archived</label> -->
+                <!-- <input type="checkbox" class="card w-100" name="is_archived" value="" required/> -->
             </div>
         </div>
         <!-- https://stackoverflow.com/questions/477691/submitting-a-form-by-pressing-enter-without-a-submit-button -->
