@@ -1,3 +1,22 @@
+/* theme and color palette */
+body {
+  --color-bg-primary: #f7f2ee;
+  --color-bg-secondary: #e7d9cf;
+  --color-text-primary: #302218;
+  --color-text-secondary: #302218;
+  --color-brand-primary: #8c6345;
+  --color-border: #d8c1b0;
+
+  @media (prefers-color-scheme: dark) {
+    --color-bg-primary: #181818;
+    --color-bg-secondary: #232323;
+    --color-text-primary: #cccccc;
+    --color-text-secondary: #383838;
+    --color-brand-primary: #ffaa00;
+    --color-border: #383838;
+  }
+}
+
 /* based on lit - a ridiculously small responsive css framework - https://ajusa.github.io/lit/ */
 *{box-sizing:border-box}
 pre{overflow:auto}
@@ -27,13 +46,6 @@ a{color:#fa0;text-decoration:none}
 td,th{padding:1em;text-align:left;border-bottom:solid #eee}
 .btn{padding:1em;text-transform:uppercase;background:#fff;border:solid;font:.7em nunito}
 
-/* lit overrides */
-a:hover{text-decoration: underline}
-input{line-height: 20px}
-label{font-size: small}
-td{border-bottom: none; padding: .5em .2em}
-.card,pre{padding: .5em}
-
 /* helper classes */
 .block{display: block}
 .hide{display: none}
@@ -41,12 +53,18 @@ td{border-bottom: none; padding: .5em .2em}
 .text-center{text-align: center}
 .text-small{font-size: small}
 
-/* theme */
-body{background-color: #181818; color: #cccccc;}
-h1, h2, a{color: #ffaa00}
-.card:focus, hr{border-color: #ffaa00}
-form{padding: 1em 0 0 0; background-color: #232323; border: solid 1px #383838; border-radius: 5px}
-form legend{margin: 0 0 5px 0; border-bottom: solid 1px #383838;}
-tr{border: solid 1px #383838; border-width: 1px 2px 1px 2px}
-tr:hover{border-color: #ffaa00}
-tr.checked{color: #383838}
+/* lit overrides */
+body{background-color: var(--color-bg-primary); color: var(--color-text-primary);}
+h1, h2, a{color: var(--color-brand-primary)}
+a:hover{text-decoration: underline}
+label{font-size: small;}
+input{line-height: 20px;}
+.card:focus, hr{border-color: var(--color-brand-primary)}
+form{padding: 1em 0 0 0; background-color: var(--color-bg-secondary); border: solid 1px var(--color-border); border-radius: 5px;}
+td,th{padding: .5em; border-bottom-color: var(--color-border);}
+td{border-bottom: none;}
+tr{background-color: var(--color-bg-secondary); border: solid 1px var(--color-border); border-radius: 5px; margin-bottom: .5em;}
+tr:hover{border-color: var(--color-brand-primary);}
+tr.checked{color: var(--color-border);}
+input.card{padding: .25em .5em; border-color: var(--color-bg-primary); background-color: var(--color-bg-primary); color: var(--color-text-primary);}
+input.card:focus{border-color: var(--color-brand-primary);}
