@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="create_section mb4">
+    <form id="create_form" class="form bordered rounded" method="post" action="{{ url_for('web_app.delete', time_id=record.id) }}">
+        <div class="form-header pv2">
+            <div class="row">
+                <legend class="bold">Delete timespan</legend>
+            </div>
+        </div>
+        <div class="form-body pv1">
+            <div class="row mb1">
+                <span>Are you sure you want to delete "{{ record.description }}" @ {{ record.start_at|datetimeformat('short') }} ?</span>
+            </div>
+        </div>
+        <div class="form-footer pv2">
+            <div class="row">
+                <div class="col 4">
+                    {{ form.submit(class_="btn primary rounded") }}
+                </div>
+                <div class="col 4">
+                    {{ form.csrf_token }}
+                </div>
+                <div class="col 4 text-right">
+                    <a href="{{ url_for('web_app.edit', time_id=record.id) }}" class="btn rounded">Go back</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

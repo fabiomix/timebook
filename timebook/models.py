@@ -1,4 +1,4 @@
-from datetime import datetime, time, timedelta
+from datetime import date, datetime, time, timedelta
 
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -24,6 +24,10 @@ class Timespan(db.Model):
         self.start_at = start_at
         self.end_at = end_at
         self.is_archived = False
+
+    @hybrid_property
+    def search_date(self) -> date:
+        return self.start_at.date()
 
     @hybrid_property
     def start_time(self) -> time:

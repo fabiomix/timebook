@@ -12,7 +12,7 @@
 <body>
     <div class="c">
         <div class="row" id="navbar">
-            <h1 class="text-center"><a href="{{ url_for('timesheet_app.index') }}"><strong>Timebook</strong></a></h1>
+            <h1 class="text-center bold"><a href="{{ url_for('web_app.index') }}"><strong>Timebook</strong></a></h1>
         </div>
         {% block content %} {% endblock %}
         <hr>
@@ -20,7 +20,7 @@
             <p class="text-small">
                 <span>built with &hearts; using Flask</span>
                 &middot;
-                <a href="{{ url_for('timesheet_app.report') }}">show report</a>
+                <a href="{{ url_for('web_app.report') }}">show report</a>
                 &middot;
                 <a href="https://github.com/fabiomix/timebook" target="_blank" rel="noopener">github</a>
             </p>
@@ -30,8 +30,10 @@
         document.querySelectorAll('.toggle-link').forEach(link => {
             link.addEventListener('click', function(event) {
                 event.preventDefault();  // Prevent default link behavior (navigation)
+                var csrf_token = "{{ csrf_token() }}";
                 fetch(this.getAttribute('href'), {
                     method: 'POST',
+                    headers: {'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': csrf_token}
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -39,12 +41,14 @@
                     }
                 })
                 .then(updatedData => {
-                    const row = this.closest('tr.row');
-                    if (row.classList.contains('checked')) {
-                        row.classList.remove('checked');
+                    const row = this.closest('div.timespan');
+                    if (row.classList.contains('archived')) {
+                        row.classList.remove('archived');
+                        row.classList.add('active');
                         this.textContent = 'archive';
                     } else {
-                        row.classList.add('checked');
+                        row.classList.add('archived');
+                        row.classList.remove('active');
                         this.textContent = 'restore';
                     }
                 })

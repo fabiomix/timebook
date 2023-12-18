@@ -1,46 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row" id="timeform">
-    <form method="post" action="{{ url_for('timesheet_app.create_timesheet') }}">
-        <div class="row">
-            <div class="col 6">
-                <label for="description" class="text-small">Description</label>
-                <input type="text" class="card w-100" name="description" placeholder="lorem ipsum" value="" required/>
+<div id="create_section">
+    <form id="create_form" class="form bordered rounded" method="post" action="{{ url_for('web_app.index') }}">
+        <div class="form-body pv2" style="padding-top: .5em;">
+            <div class="row">
+                <div class="col 6">
+                    {{ form.description.label(class="text-small") }}
+                    {{ form.description(class_="card w-100", placeholder="lorem ipsum") }}
+                </div>
+                <div class="col 3">
+                    {{ form.start_time.label(class="text-small") }}
+                    {{ form.start_time(class_="card w-100") }}
+                </div>
+                <div class="col 3">
+                    {{ form.end_time.label(class="text-small") }}
+                    {{ form.end_time(class_="card w-100") }}
+                </div>
             </div>
-            <div class="col 3">
-                <label for="start_time" class="text-small">Start time</label>
-                <input type="time" class="card w-100" name="start_time" value="" required/>
-            </div>
-            <div class="col 3">
-                <label for="end_time" class="text-small">End time</label>
-                <input type="time" class="card w-100" name="end_time" value="" required/>
+            <div class="row">
+                <!-- https://stackoverflow.com/questions/477691/submitting-a-form-by-pressing-enter-without-a-submit-button -->
+                {{ form.csrf_token }}
+                {{ form.search_date(value=search_date, type="hidden") }}
+                {{ form.submit(class_="hide") }}
             </div>
         </div>
-        <!-- https://stackoverflow.com/questions/477691/submitting-a-form-by-pressing-enter-without-a-submit-button -->
-        <button type="submit" style="visibility: hidden; height: 0;">Submit</button>
-        <input type="hidden" name="search_date" value="{{ search_date }}"/>
     </form>
 </div>
-<div class="row" id="timetable">
-    <h3 class="text-center"><a href="{{ url_for('timesheet_app.index', search_date=search_date) }}">{{ search_date|dateformat('full') }}</a></h3>
-    <table class="w-100">
-        <tbody>
-            {% for t in lines %}
-            <tr class="row {{ 'checked' if t.is_archived else '' }}">
-                <td class="col">{{ t.description }}</td>
-                <td class="col 2 text-center text-small">
-                    <span class="block">{{ t.duration|format_timedelta() }} from</span>
-                    <span class="block">{{ t.start_time|timeformat('short') }} to {{ t.end_time|timeformat('short') }}</span>
-                </td>
-                <td class="col 2 text-center text-small">
-                    <a class="block" href="{{ url_for('timesheet_app.read_timesheet', time_id=t.id)}}">edit</a>
-                    <a class="block toggle-link" href="{{ url_for('timesheet_app.toggle_checked', time_id=t.id)}}">{{ 'restore' if t.is_archived else 'archive'}}</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div id="main">
+    <h3 class="text-center"><a href="{{ url_for('web_app.index', search_date=search_date) }}">{{ search_date|dateformat('full') }}</a></h3>
+    {% for t in lines %}
+    <div class="row timespan bordered rounded pv1 mb1 {{ 'archived' if t.is_archived else 'active' }}">
+        <div class="col">{{ t.description }}</div>
+        <div class="col 2 text-center text-small">
+            <span class="block">{{ t.duration|format_timedelta() }} from</span>
+            <span class="block">{{ t.start_time|timeformat('short') }} to {{ t.end_time|timeformat('short') }}</span>
+        </div>
+        <div class="col 2 text-center text-small">
+            <a class="bold block" href="{{ url_for('web_app.edit', time_id=t.id)}}">edit</a>
+            <a class="bold block toggle-link" href="{{ url_for('web_app.toggle_checked', time_id=t.id)}}">{{ 'restore' if t.is_archived else 'archive'}}</a>
+        </div>
+    </div>
+    {% endfor %}
     <h4 class="text-center">Total {{ total_time|format_timedelta(force_full=True) }}</h4>
 </div>
 {% endblock %}

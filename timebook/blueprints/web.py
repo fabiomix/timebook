@@ -1,63 +1,80 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
-from flask import request, render_template, redirect, url_for
-from flask import Blueprint
+from flask import abort, Blueprint, current_app, redirect, render_template, request, url_for
 from sqlalchemy import func
 
-from timebook.utils import ensure_valid_date, ensure_required_fields
+from timebook.forms import TimespanCreateForm, TimespanDeleteForm, TimespanEditForm
 from timebook.models import Timespan
-from timebook import db
+from timebook import csrf, db
 
-timesheet_app = Blueprint("timesheet_app", __name__)
+web_app = Blueprint("web_app", __name__)
 
 
-@timesheet_app.get("/")
+@web_app.route("/", methods=["GET", "POST"])
 def index():
-    """The main page, shows timespan from selected date (or today)."""
-    search_date = ensure_valid_date(request.args.get("search_date", ""))
+    form = TimespanCreateForm()
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            search_date = form.search_date.data
+            start_at = datetime.combine(search_date, form.start_time.data)  # type: ignore
+            end_at = datetime.combine(search_date, form.end_time.data)  # type: ignore
+            new_record = Timespan(form.description.data, start_at, end_at)  # type: ignore
+            db.session.add(new_record)
+            db.session.commit()
+            return redirect(url_for("web_app.index", search_date=search_date))
+        else:
+            current_app.logger.error(f"Form validation failed: {form.errors}")
+            abort(400)  # Bad Request
+
+    search_date = request.args.get("search_date", date.today().isoformat())
+    search_date = date.fromisoformat(search_date)
     lines = Timespan.query.filter(func.DATE(Timespan.start_at) == search_date)
     lines = lines.order_by(Timespan.start_at, Timespan.id).all()
     total_time = sum([t.duration for t in lines], start=timedelta(0))
-    return render_template("index.html", search_date=search_date, lines=lines, total_time=total_time)
+    return render_template("index.html", form=form, search_date=search_date, lines=lines, total_time=total_time)
 
 
-@timesheet_app.post("/")
-def create_timesheet():
-    """Submit a new timesheet record for creation."""
-    form_data = ensure_required_fields()
-    search_date = ensure_valid_date(form_data.get("search_date", "")).isoformat()
-    start_time, end_time = form_data["start_time"], form_data["end_time"]
-    start_at = datetime.fromisoformat(f"{search_date}T{start_time}")
-    end_at = datetime.fromisoformat(f"{search_date}T{end_time}")
-    description = form_data["description"]
-    new_timesheet = Timespan(description, start_at, end_at)
-    db.session.add(new_timesheet)
-    db.session.commit()
-    return redirect(url_for("timesheet_app.index", search_date=new_timesheet.start_at.date()))
-
-
-@timesheet_app.get("/edit/<int:time_id>")
-def read_timesheet(time_id):
-    """Edit page for updating an existing record."""
+@web_app.route("/edit/<int:time_id>", methods=["GET", "POST"])
+def edit(time_id):
     record = Timespan.query.get_or_404(time_id)
-    return render_template("edit.html", record=record)
+    form = TimespanEditForm(obj=record)
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            search_date = form.search_date.data
+            record.start_at = datetime.combine(search_date, form.start_time.data)  # type: ignore
+            record.end_at = datetime.combine(search_date, form.end_time.data)  # type: ignore
+            record.description = form.description.data  # type: ignore
+            record.is_archived = bool(form.is_archived.data)
+            db.session.commit()
+            return redirect(url_for("web_app.index", search_date=search_date))
+        else:
+            current_app.logger.error(f"Form validation failed: {form.errors}")
+            abort(400)  # Bad Request
+
+    return render_template("edit.html", form=form, record=record)
 
 
-@timesheet_app.post("/edit/<int:time_id>")
-def update_timesheet(time_id):
-    """Submit an update for an existing record."""
-    record: Timespan = Timespan.query.get_or_404(time_id)
-    form_data = ensure_required_fields()
-    search_date = ensure_valid_date(form_data.get("search_date", "")).isoformat()
-    start_time, end_time = form_data["start_time"], form_data["end_time"]
-    record.start_at = datetime.fromisoformat(f"{search_date}T{start_time}")
-    record.end_at = datetime.fromisoformat(f"{search_date}T{end_time}")
-    record.description = form_data["description"]
-    db.session.commit()
-    return redirect(url_for("timesheet_app.index", search_date=record.start_at.date()))
+@web_app.route("/delete/<int:time_id>", methods=["GET", "POST"])
+def delete(time_id):
+    record = Timespan.query.get_or_404(time_id)
+    form = TimespanDeleteForm(obj=record)
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            search_date = record.search_date
+            db.session.delete(record)
+            db.session.commit()
+            return redirect(url_for("web_app.index", search_date=search_date))
+        else:
+            current_app.logger.error(f"Form validation failed: {form.errors}")
+            abort(400)  # Bad Request
+
+    return render_template("delete.html", form=form, record=record)
 
 
-@timesheet_app.post("/toggle/<int:time_id>")
+@web_app.post("/toggle/<int:time_id>")
 def toggle_checked(time_id):
     """Alternates `is_archived` status for selected record."""
     record = Timespan.query.get_or_404(time_id)
@@ -66,14 +83,15 @@ def toggle_checked(time_id):
     return ("", 204)
 
 
-@timesheet_app.get("/toggle/<int:time_id>")
+@web_app.get("/toggle/<int:time_id>")
+@csrf.exempt
 def toggle_checked_nojs(time_id):
     """Alternates `is_archived` status for selected record. For client without js."""
     toggle_checked(time_id)
     return redirect(request.referrer)
 
 
-@timesheet_app.get("/report")
+@web_app.get("/report")
 def report():
     """Print every timesheet recorded in a single page, grouped by day."""
     lines = Timespan.query.order_by(func.DATE(Timespan.start_at).desc(), Timespan.start_at, Timespan.id).all()

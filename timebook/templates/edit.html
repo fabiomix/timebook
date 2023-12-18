@@ -1,35 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row">
-    <form class="w-100 mb5" method="post">
-        <div class="row"><legend>Edit timesheet</legend></div>
-        <div class="row">
-            <div class="col">
-                <label for="description" class="text-small">Description</label>
-                <input type="text" class="card w-100" name="description" placeholder="lorem ipsum" value="{{record.description}}" required/>
+<div class="create_section mb4">
+    <form id="create_form" class="form bordered rounded" method="post" action="{{ url_for('web_app.edit', time_id=record.id) }}">
+        <div class="form-header pv2">
+            <div class="row">
+                <legend class="bold">Edit timespan</legend>
             </div>
         </div>
-        <div class="row">
-            <div class="col 3">
-                <label for="start_time" class="text-small">Start time</label>
-                <input type="time" class="card w-100" name="start_time" value="{{record.start_time.isoformat(timespec='minutes')}}" required/>
+        <div class="form-body pv1">
+            <div class="row mb1">
+                <div class="col 4">{{ form.description.label }}</div>
+                <div class="col 8">{{ form.description(class_="card w-100") }}</div>
             </div>
-            <div class="col 3">
-                <label for="end_time" class="text-small">End time</label>
-                <input type="time" class="card w-100" name="end_time" value="{{record.end_time.isoformat(timespec='minutes')}}" required/>
+            <div class="row mb1">
+                <div class="col 4">{{ form.search_date.label }}</div>
+                <div class="col 8">
+                    {{ form.search_date(class_="card col 4 mr1") }}
+                    {{ form.start_time(class_="card col 4 mr1") }}
+                    {{ form.end_time(class_="card col 4 mr0") }}
+                </div>
             </div>
-            <div class="col 3">
-                <label for="search_date" class="text-small">Date</label>
-                <input type="date" class="card w-100" name="search_date" value="{{record.start_at.date()}}" required/>
+            <div class="row mb1">
+                <div class="col 4">{{ form.is_archived.label }}</div>
+                <div class="col 8">{{ form.is_archived() }}</div>
             </div>
-            <div class="col 3">
-                <!-- <label for="is_archived" class="text-small">Archived</label> -->
-                <!-- <input type="checkbox" class="card w-100" name="is_archived" value="" required/> -->
+            <div class="row mb1">
+                <div class="col 4"><label for="">Created at</label></div>
+                <div class="col 8">{{ record.created_at|datetimeformat('long') }}</div>
+            </div>
+            <div class="row mb1">
+                <div class="col 4"><label for="">Updated at</label></div>
+                <div class="col 8">{{ record.updated_at|datetimeformat('long') }}</div>
             </div>
         </div>
-        <!-- https://stackoverflow.com/questions/477691/submitting-a-form-by-pressing-enter-without-a-submit-button -->
-        <button type="submit" style="visibility: hidden; height: 0;">Submit</button>
+        <div class="form-footer pv2">
+            <div class="row">
+                <div class="col 4">
+                    {{ form.submit(class_="btn primary rounded") }}
+                    <a href="{{ url_for('web_app.index', search_date=record.search_date) }}" class="btn rounded">Go back</a>
+                </div>
+                <div class="col 4">
+                    {{ form.csrf_token }}
+                </div>
+                <div class="col 4 text-right">
+                    <a href="{{ url_for('web_app.delete', time_id=record.id) }}" class="btn rounded">Delete this record</a>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 {% endblock %}
