@@ -1,10 +1,10 @@
 /* theme and color palette */
 body {
   --color-bg-primary: #f7f2ee;
-  --color-bg-secondary: #e7d9cf;
-  --color-text-primary: #302218;
-  --color-brand-primary: #8c6345;
-  --color-border: #d8c1b0;
+  --color-bg-secondary: #e8dede;
+  --color-text-primary: #342222;
+  --color-brand-primary: #803333;
+  --color-border: #d5c8c8;
 
   @media (prefers-color-scheme: dark) {
     --color-bg-primary: #181818;
@@ -88,6 +88,7 @@ td,th{padding:1em;text-align:left;border-bottom:solid #eee}
 .bordered{border: solid 1px var(--color-border);}
 .hide{display: none}
 .inline{display: inline-block}
+.brand{color: var(--color-brand-primary) !important}
 .text-center{text-align: center}
 .text-right{text-align: right}
 .text-small{font-size: small}
@@ -103,7 +104,7 @@ form.form legend{border-bottom: solid 1px var(--color-border);}
 label{font-size: small;}
 input{line-height: 20px;}
 input.card{background-color: var(--color-bg-primary); border-color: var(--color-bg-primary); color: var(--color-text-primary); padding: .25em .5em;}
-.btn{background-color: var(--color-bg-secondary); border: solid 2px var(--color-border); color: var(--color-brand-primary); padding: .5em 1em;}
+.btn{background-color: var(--color-bg-secondary); border: solid 2px var(--color-border); color: var(--color-text-primary); padding: .5em 1em;}
 .btn.primary{background-color: var(--color-brand-primary); border: solid 2px var(--color-brand-primary); color: var(--color-bg-primary);}
 div.timespan.archived{color: var(--color-border);}
 div.timespan:hover{border-color: var(--color-brand-primary);}

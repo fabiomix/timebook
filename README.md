@@ -1,14 +1,16 @@
 # Timebook
 Simple web application for tracking how you spend your time,
-slightly inspired by Traggo - a tag-based time tracking tool.
+slightly inspired by Traggo (a great open source tag-based time-tracking tool)
+but without tags.
 
-![](.images/screenshot.png)
+![](.github/screenshot.png)
 
 
 ## Features
-- time tracking based on free text description, end-time and duration
-- list timespans by date, or show all
-- generic "Archived" status, to mark already reported/invoiced/whatever records
+- Time-tracking based on free text description, start time and end time.
+- List timespans by date, or show all.
+- Generic "archived" status, to mark already reported/invoiced/whatever records.
+- Light and dark themes.
 
 
 ## Virtual environment

@@ -16,14 +16,24 @@
         </div>
         {% block content %} {% endblock %}
         <hr>
-        <div class="row" id="footer">
-            <p class="text-small">
-                <span>built with &hearts; using Flask</span>
-                &middot;
-                <a href="{{ url_for('web_app.report') }}">show report</a>
-                &middot;
-                <a href="https://github.com/fabiomix/timebook" target="_blank" rel="noopener">github</a>
-            </p>
+        <div class="row mb2" id="footer">
+            <div class="col 8">
+                <p class="text-small">
+                    <span>built with &hearts; using Flask</span>
+                    &middot;
+                    <a href="{{ url_for('web_app.report') }}">show report</a>
+                    &middot;
+                    <a href="https://github.com/fabiomix/timebook" target="_blank" rel="noopener">github</a>
+                </p>
+            </div>
+            <div class="col 4">
+                {% if search_date is defined %}
+                <form class="text-right" action="{{ url_for('web_app.index') }}" method="get">
+                    <input type="date" id="search_date" class="card" name="search_date" value="{{ search_date }}" required>
+                    <button type="submit" class="btn rounded">Go</button>
+                </form>
+                {% endif %}
+            </div>
         </div>
     </div>
     <script>
