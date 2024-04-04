@@ -20,3 +20,15 @@ venv/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Github Actions
+.github/workflows/
+
+# Git
+.git/
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml

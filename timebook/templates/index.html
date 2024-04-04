@@ -32,11 +32,11 @@
     {% for t in lines %}
     <div class="row timespan bordered rounded pv1 mb1 {{ 'archived' if t.is_archived else 'active' }}">
         <div class="col">{{ t.description }}</div>
-        <div class="col 2 text-center text-small">
+        <div class="col 3 text-center text-small">
             <span class="block">{{ t.duration|format_timedelta() }} from</span>
             <span class="block">{{ t.start_time|timeformat('short') }} to {{ t.end_time|timeformat('short') }}</span>
         </div>
-        <div class="col 2 text-center text-small">
+        <div class="col 1 text-center text-small">
             <a class="bold block" href="{{ url_for('web_app.edit', time_id=t.id)}}">edit</a>
             <a class="bold block toggle-link" href="{{ url_for('web_app.toggle_checked', time_id=t.id)}}">{{ 'restore' if t.is_archived else 'archive'}}</a>
         </div>

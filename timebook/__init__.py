@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_babel import Babel
 from flask_sqlalchemy import SQLAlchemy
@@ -10,12 +12,11 @@ db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
-    app.secret_key = "supersecretkey"
+    app.secret_key = os.environ.get("TIMEBOOK_SECRET_KEY", "supersecretkey")
 
-    # app.config.from_pyfile(config_filename)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///time.db"
-    app.config["BABEL_DEFAULT_LOCALE"] = "it"
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("TIMEBOOK_DATABASE_URI", "sqlite:///time.db")
+    app.config["BABEL_DEFAULT_LOCALE"] = os.environ.get("TIMEBOOK_LOCALE", "en")
 
     # extensions init
     babel.init_app(app)

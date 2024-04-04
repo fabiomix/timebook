@@ -1,0 +1,21 @@
+---
+version: "2.1"
+services:
+  timebook:
+    image: ghcr.io/fabiomix/timebook:latest
+    environment:
+      - TIMEBOOK_LOCALE=it
+    volumes:
+      - ./instance:/app/instance
+    ports:
+      - "8000:8000"
+    # Flask requires SIGINT to stop gracefully (default stop signal from Compose is SIGTERM).
+    # Uncomment the following line if you are running Flask directly instead of using Gunicorn.
+    # stop_signal: SIGINT
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8000/health"]
+      interval: 120s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped

@@ -10,6 +10,11 @@ from timebook import csrf, db
 web_app = Blueprint("web_app", __name__)
 
 
+@web_app.route("/health")
+def health():
+    return "OK", 200
+
+
 @web_app.route("/", methods=["GET", "POST"])
 def index():
     form = TimespanCreateForm()
