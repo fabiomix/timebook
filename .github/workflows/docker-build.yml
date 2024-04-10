@@ -1,0 +1,28 @@
+name: Build and publish Docker image
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Build Docker image
+        run: docker build . -t ghcr.io/fabiomix/timebook:${{ github.ref_name }} -t ghcr.io/fabiomix/timebook:latest
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/fabiomix/timebook:${{ github.ref_name }}
+          docker push ghcr.io/fabiomix/timebook:latest
