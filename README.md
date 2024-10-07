@@ -49,9 +49,12 @@ Or the production server with
 ## Command-line interface
 A command-line interface (CLI) is available for managing time records.
 
-    flask cli --help
-    flask cli time-delete --help
-    flask cli time-prune --help
+    flask timectl --help
+    flask timectl list 2023-04-03
+    flask timectl add  # interactive or with options
+    flask timectl edit 3 --end "15:30"
+    flask timectl delete 5
+    flask timectl prune --yes
 
 
 ## Credits

@@ -11,7 +11,7 @@ class Timespan(db.Model):
     id: int = db.Column(db.Integer, primary_key=True, autoincrement=True)  # primary keys are required by SQLAlchemy
     description: str = db.Column(db.String(500), nullable=False)
     start_at: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    end_at: datetime = db.Column(db.DateTime, nullable=True)
+    end_at: datetime = db.Column(db.DateTime, nullable=False)
     is_archived: bool = db.Column(db.Boolean, nullable=False, default=False)
     created_at: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
