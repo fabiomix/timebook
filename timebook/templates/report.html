@@ -2,6 +2,14 @@
 
 {% block content %}
 <div id="report_section">
+    <div class="report_pagination pv1 text-center">
+        {% if prev_page %}
+        <a class="button" href="{{ url_for('web_app.report', page=prev_page) }}">&laquo; Prev</a>
+        {% endif %}
+        {% if next_page %}
+        <a class="button" href="{{ url_for('web_app.report', page=next_page) }}">Next &raquo;</a>
+        {% endif %}
+    </div>
     {% for time_key in time_groups %}
     <div class="report_group">
         <h3 class="text-center"><a href="{{ url_for('web_app.index', search_date=time_key) }}">{{ time_key|dateformat('full') }}</a></h3>
@@ -20,6 +28,14 @@
         {% endfor %}
     </div>
     {% endfor %}
+    <div class="report_pagination pv2 text-center">
+        {% if prev_page %}
+        <a class="button" href="{{ url_for('web_app.report', page=prev_page) }}">&laquo; Prev</a>
+        {% endif %}
+        {% if next_page %}
+        <a class="button" href="{{ url_for('web_app.report', page=next_page) }}">Next &raquo;</a>
+        {% endif %}
+    </div>
 </div>
 
 {% endblock %}

@@ -41,7 +41,7 @@ def index():
 
 
 @web_app.route("/edit/<int:time_id>", methods=["GET", "POST"])
-def edit(time_id):
+def edit(time_id: int):
     record = Timespan.query.get_or_404(time_id)
     form = TimespanEditForm(obj=record)
 
@@ -62,7 +62,7 @@ def edit(time_id):
 
 
 @web_app.route("/delete/<int:time_id>", methods=["GET", "POST"])
-def delete(time_id):
+def delete(time_id: int):
     record = Timespan.query.get_or_404(time_id)
     form = TimespanDeleteForm(obj=record)
 
@@ -80,7 +80,7 @@ def delete(time_id):
 
 
 @web_app.post("/toggle/<int:time_id>")
-def toggle_checked(time_id):
+def toggle_checked(time_id: int):
     """Alternates `is_archived` status for selected record."""
     record = Timespan.query.get_or_404(time_id)
     record.is_archived = bool(not record.is_archived)
@@ -90,16 +90,27 @@ def toggle_checked(time_id):
 
 @web_app.get("/toggle/<int:time_id>")
 @csrf.exempt
-def toggle_checked_nojs(time_id):
+def toggle_checked_nojs(time_id: int):
     """Alternates `is_archived` status for selected record. For client without js."""
     toggle_checked(time_id)
     return redirect(request.referrer)
 
 
-@web_app.get("/report")
-def report():
+@web_app.get("/report", defaults={"page": 1})
+@web_app.get("/report/<int:page>")
+def report(page: int):
     """Print every timesheet recorded in a single page, grouped by day."""
-    lines = Timespan.query.order_by(func.DATE(Timespan.start_at).desc(), Timespan.start_at, Timespan.id).all()
+
+    # Get the latest 20 distinct days with recorded timespans
+    time_keys = Timespan.query.with_entities(func.DATE(Timespan.start_at).label("time_key")).distinct()
+    time_keys = time_keys.order_by(Timespan.start_at.desc()).paginate(page=page, per_page=20, error_out=True)  # type: ignore
+    page_days = [d.time_key for d in time_keys.items]
+
+    # Fetch all timespans for the selected days
+    lines = Timespan.query.filter(func.DATE(Timespan.start_at).in_(page_days))
+    lines = lines.order_by(func.DATE(Timespan.start_at).desc(), Timespan.start_at, Timespan.id).all()
+
+    # Group timespans by day
     time_groups = {}
     for record in lines:
         time_key = record.start_at.date()
@@ -107,4 +118,7 @@ def report():
             time_groups[time_key] = [record]
         else:
             time_groups[time_key].append(record)
-    return render_template("report.html", time_groups=time_groups)
+
+    next_page = time_keys.next_num if time_keys.has_next else None
+    prev_page = time_keys.prev_num if time_keys.has_prev else None
+    return render_template("report.html", time_groups=time_groups, page=page, next_page=next_page, prev_page=prev_page)
